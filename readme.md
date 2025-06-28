@@ -1,11 +1,13 @@
-# Battery Monitor Script
+# System Monitor Script
 
-A Python script that reads battery voltage from a MAX17048 fuel gauge IC and displays the battery status with percentage estimation.
+A Python script that reads battery voltage from a MAX17048 fuel gauge IC and CPU temperature, displaying system status with percentage estimation and temperature readings.
 
 ## Features
 - Reads voltage from MAX17048 over I2C
 - Converts voltage to estimated battery percentage (LiPo battery)
 - Shows battery status with visual icons
+- Displays CPU temperature from sensors command
+- Temperature warnings for high CPU temps
 - Single reading or continuous monitoring modes
 - Low battery warnings
 
@@ -18,7 +20,7 @@ A Python script that reads battery voltage from a MAX17048 fuel gauge IC and dis
 
 2. Create a system-wide symlink:
    ```bash
-   sudo ln -s /home/user/Documents/get-bat-volt.py /usr/local/bin/battery
+   sudo ln -s /home/mike/Documents/get-bat-volt.py /usr/local/bin/battery
    ```
 
 ## Usage
@@ -27,7 +29,7 @@ A Python script that reads battery voltage from a MAX17048 fuel gauge IC and dis
 ```bash
 battery
 ```
-Shows current battery voltage and percentage once.
+Shows current battery voltage, percentage, and CPU temperature once.
 
 ### Continuous Monitoring
 ```bash
@@ -35,7 +37,7 @@ battery -c
 # or
 battery --continuous
 ```
-Continuously displays battery status (updates every second). Press Ctrl+C to stop.
+Continuously displays battery status and CPU temperature (updates every second). Press Ctrl+C to stop.
 
 ## Battery Voltage Ranges
 - Full: 4.2V (100%)
@@ -45,4 +47,5 @@ Continuously displays battery status (updates every second). Press Ctrl+C to sto
 ## Requirements
 - Python 3
 - smbus2 library
+- lm-sensors package (for CPU temperature)
 - MAX17048 connected to I2C bus 13 at address 0x36

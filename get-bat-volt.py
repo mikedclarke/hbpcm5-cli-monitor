@@ -2,6 +2,8 @@
 import smbus2
 import time
 import sys
+import subprocess
+import re
 
 class MAX17048:
     def __init__(self, i2c_bus=13, i2c_address=0x36):
@@ -54,6 +56,29 @@ class MAX17048:
     def close(self):
         self.bus.close()
 
+def get_cpu_temp():
+    """Get CPU temperature using sensors command"""
+    try:
+        result = subprocess.run(['sensors'], capture_output=True, text=True)
+        # Look for cpu_thermal temperature
+        match = re.search(r'temp1:\s+\+(\d+\.\d+)°C', result.stdout)
+        if match:
+            return float(match.group(1))
+    except Exception:
+        pass
+    return None
+
+def get_temp_icon(temp):
+    """Return a visual temperature icon based on temperature"""
+    if temp is None:
+        return "🌡️"
+    elif temp >= 70:
+        return "🔥"
+    elif temp >= 50:
+        return "🌡️"
+    else:
+        return "❄️"
+
 def main():
     max17048 = MAX17048()
     
@@ -61,15 +86,18 @@ def main():
     continuous = "--continuous" in sys.argv or "-c" in sys.argv
     
     if continuous:
-        print("Battery Monitor (Press Ctrl+C to stop)")
-        print("-" * 40)
+        print("System Monitor (Press Ctrl+C to stop)")
+        print("-" * 50)
         try:
             while True:
                 voltage = max17048.read_voltage()
                 if voltage is not None:
                     percentage = max17048.voltage_to_percentage(voltage)
-                    icon = max17048.get_battery_icon(percentage)
-                    print(f"\r{icon} Battery: {percentage:3d}% ({voltage:.2f}V)", end="", flush=True)
+                    bat_icon = max17048.get_battery_icon(percentage)
+                    cpu_temp = get_cpu_temp()
+                    temp_icon = get_temp_icon(cpu_temp)
+                    temp_str = f"{cpu_temp:.1f}°C" if cpu_temp else "N/A"
+                    print(f"\r{bat_icon} Battery: {percentage:3d}% ({voltage:.2f}V)  {temp_icon} CPU: {temp_str:>6}", end="", flush=True)
                 time.sleep(1)
                 
         except KeyboardInterrupt:
@@ -81,13 +109,26 @@ def main():
         if voltage is not None:
             percentage = max17048.voltage_to_percentage(voltage)
             icon = max17048.get_battery_icon(percentage)
-            print(f"{icon} Battery Status")
+            cpu_temp = get_cpu_temp()
+            temp_icon = get_temp_icon(cpu_temp)
+            
+            print("System Status")
+            print("-" * 20)
+            print(f"{icon} Battery:")
             print(f"  Voltage: {voltage:.2f}V")
             print(f"  Charge:  {percentage}%")
             
-            # Add warning for low battery
+            print(f"\n{temp_icon} CPU Temperature:")
+            if cpu_temp:
+                print(f"  Temp: {cpu_temp:.1f}°C")
+                if cpu_temp >= 70:
+                    print("  ⚠️  High temperature!")
+            else:
+                print("  Temp: N/A")
+            
+            # Add warnings
             if percentage < 20:
-                print("  ⚠️  Low battery - please charge soon!")
+                print("\n⚠️  Low battery - please charge soon!")
         max17048.close()
 
 if __name__ == "__main__":
