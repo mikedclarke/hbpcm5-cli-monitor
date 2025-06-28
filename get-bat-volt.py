@@ -86,7 +86,7 @@ def main():
     continuous = "--continuous" in sys.argv or "-c" in sys.argv
     
     if continuous:
-        print("System Monitor (Press Ctrl+C to stop)")
+        print("HBP CM5 System Monitor (Press Ctrl+C to stop)")
         print("-" * 50)
         try:
             while True:
