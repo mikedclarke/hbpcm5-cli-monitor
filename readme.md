@@ -1,4 +1,4 @@
-# System Monitor Script
+# Hackberry Pi CM5 System Monitor Script
 
 A Python script that reads battery voltage from a MAX17048 IC and CPU temperature, displaying system status with percentage estimation and temperature readings.
 
