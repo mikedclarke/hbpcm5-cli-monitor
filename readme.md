@@ -1,6 +1,6 @@
 # System Monitor Script
 
-A Python script that reads battery voltage from a MAX17048 fuel gauge IC and CPU temperature, displaying system status with percentage estimation and temperature readings.
+A Python script that reads battery voltage from a MAX17048 IC and CPU temperature, displaying system status with percentage estimation and temperature readings.
 
 ## Features
 - Reads voltage from MAX17048 over I2C
@@ -15,12 +15,12 @@ A Python script that reads battery voltage from a MAX17048 fuel gauge IC and CPU
 
 1. Make the script executable:
    ```bash
-   chmod +x /home/mike/Documents/get-bat-volt.py
+   chmod +x /home/LOCATION/get-bat-volt.py
    ```
 
 2. Create a system-wide symlink:
    ```bash
-   sudo ln -s /home/mike/Documents/get-bat-volt.py /usr/local/bin/battery
+   sudo ln -s /home/LOCATION/get-bat-volt.py /usr/local/bin/battery
    ```
 
 ## Usage
