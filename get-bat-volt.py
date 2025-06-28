@@ -112,7 +112,7 @@ def main():
             cpu_temp = get_cpu_temp()
             temp_icon = get_temp_icon(cpu_temp)
             
-            print("System Status")
+            print("HBPi CM5 System Status")
             print("-" * 20)
             print(f"{icon} Battery:")
             print(f"  Voltage: {voltage:.2f}V")
